@@ -1,0 +1,33 @@
+/**:
+  ros__parameters:
+    # Network Configuration
+    websocket_port: 8765
+    
+    # ROS2 Topics
+    cmd_vel_topic: '/cmd_vel'
+    odom_topic: '/odom'
+    battery_topic: '/battery_state'
+    scan_topic: '/scan'
+    map_topic: '/map'
+    amcl_pose_topic: '/amcl_pose'
+    camera_topic: '/camera/image_raw/compressed'
+    
+    # Safety Limits
+    max_linear_vel: 0.5   # m/s
+    max_angular_vel: 1.0  # rad/s
+    
+    # Deadman Switch
+    deadman_timeout: 0.5  # seconds
+    
+    # Robot Launch Configuration
+    robot_launch_package: 'my_bot'           # e.g., 'turtlebot3_bringup'
+    robot_launch_file: 'launch_sim.launch.py'              # e.g., 'robot.launch.py'
+    
+    # URDF Configuration
+    robot_description_topic: '/robot_description'  # Topic publishing URDF
+    urdf_file_path: '/home/jd/dev_ws/src/my_bot/description/robot.urdf.xacro'                 # Direct path to URDF file (fallback)
+    
+    # Camera Configuration
+    enable_camera: true
+    camera_quality: 30                 # JPEG quality 1-100
+    camera_rate: 5                    # Hz

@@ -1,0 +1,1809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMR Control Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        :root {
+            --bg-dark: #0a0e1a;
+            --bg-card: #151b2e;
+            --bg-panel: #1a2235;
+            --accent-cyan: #00d4ff;
+            --accent-purple: #a855f7;
+            --accent-green: #10b981;
+            --accent-orange: #f59e0b;
+            --accent-red: #ef4444;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --glow-cyan: rgba(0, 212, 255, 0.5);
+            --glow-purple: rgba(168, 85, 247, 0.5);
+        }
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            overflow: hidden;
+            height: 100vh;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: 320px 1fr 400px;
+            grid-template-rows: 80px 1fr;
+            height: 100vh;
+            gap: 2px;
+            background: #000;
+        }
+        /* Header with Futuristic Design */
+        .header {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #151b2e 0%, #1a2235 100%);
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--accent-cyan);
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-cyan), var(--accent-purple), transparent);
+            animation: scan 3s linear infinite;
+        }
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .logo h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        .status-bar {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 20px;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 8px;
+            border: 1px solid var(--accent-cyan);
+        }
+        .status-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--accent-red);
+            box-shadow: 0 0 10px var(--accent-red);
+        }
+        .status-dot.active {
+            background: var(--accent-green);
+            box-shadow: 0 0 15px var(--accent-green);
+            animation: pulse-glow 2s infinite;
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px var(--accent-green); }
+            50% { box-shadow: 0 0 25px var(--accent-green); }
+        }
+        .status-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        /* Left Sidebar - System Status */
+        .sidebar {
+            background: var(--bg-panel);
+            padding: 25px;
+            overflow-y: auto;
+        }
+        .section-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-cyan);
+            position: relative;
+        }
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: var(--accent-purple);
+        }
+        .info-card {
+            background: var(--bg-card);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        .info-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--accent-cyan), var(--accent-purple));
+        }
+        .info-card:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 8px 25px rgba(0, 212, 255, 0.2);
+            transform: translateX(5px);
+        }
+        .info-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 10px;
+        }
+        .info-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            text-shadow: 0 0 10px var(--glow-cyan);
+        }
+        .battery-container {
+            margin-top: 15px;
+        }
+        .battery-bar {
+            width: 100%;
+            height: 32px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid var(--border);
+            position: relative;
+        }
+        .battery-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-green), #34d399);
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .battery-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        .battery-fill.low {
+            background: linear-gradient(90deg, var(--accent-red), #f87171);
+        }
+        .battery-fill.medium {
+            background: linear-gradient(90deg, var(--accent-orange), #fbbf24);
+        }
+        /* Center Panel - Control Interface */
+        .center-panel {
+            background: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            padding: 40px;
+        }
+        /* Speed Control */
+        .speed-control {
+            width: 100%;
+            max-width: 500px;
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 16px;
+            border: 2px solid var(--accent-purple);
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.3);
+        }
+        .speed-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .speed-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent-purple);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .speed-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--accent-cyan);
+            text-shadow: 0 0 15px var(--glow-cyan);
+        }
+        .slider-container {
+            position: relative;
+            width: 100%;
+        }
+        .speed-slider {
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 4px;
+            outline: none;
+            -webkit-appearance: none;
+            position: relative;
+        }
+        .speed-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 28px;
+            height: 28px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 20px var(--glow-cyan);
+            border: 3px solid var(--bg-dark);
+            transition: all 0.2s;
+        }
+        .speed-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 30px var(--glow-cyan);
+        }
+        .speed-marks {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-family: 'Orbitron', sans-serif;
+        }
+        /* Joystick */
+        .joystick-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+        .joystick-wrapper {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            touch-action: none;
+        }
+        .joystick-base {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #1a2235, #0a0e1a);
+            border: 4px solid var(--accent-cyan);
+            box-shadow: 0 0 40px var(--glow-cyan), inset 0 0 40px rgba(0,0,0,0.8);
+            position: relative;
+            touch-action: none;
+        }
+        .joystick-center-lines {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+        .joystick-center-lines::before,
+        .joystick-center-lines::after {
+            content: '';
+            position: absolute;
+            background: rgba(0, 212, 255, 0.2);
+        }
+        .joystick-center-lines::before {
+            width: 2px;
+            height: 70%;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .joystick-center-lines::after {
+            height: 2px;
+            width: 70%;
+            left: 15%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .joystick-stick {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 40% 40%, var(--accent-cyan), #0891b2);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: grab;
+            box-shadow: 0 10px 30px var(--glow-cyan);
+            border: 4px solid var(--accent-purple);
+            transition: box-shadow 0.2s;
+            user-select: none;
+            touch-action: none;
+            z-index: 10;
+        }
+        .joystick-stick:active {
+            cursor: grabbing;
+            box-shadow: 0 10px 40px var(--glow-cyan), 0 0 20px var(--glow-purple);
+        }
+        .velocity-display {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 100%;
+            max-width: 500px;
+        }
+        .velocity-card {
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        .velocity-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple));
+        }
+        .velocity-label {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        .velocity-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 38px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .control-buttons {
+            display: flex;
+            gap: 15px;
+            width: 100%;
+            max-width: 500px;
+        }
+        .btn {
+            flex: 1;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-estop {
+            background: linear-gradient(135deg, var(--accent-red), #dc2626);
+            color: white;
+            box-shadow: 0 6px 25px rgba(239, 68, 68, 0.4);
+        }
+        .btn-estop:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 35px rgba(239, 68, 68, 0.6);
+        }
+        .btn-stop {
+            background: linear-gradient(135deg, var(--accent-orange), #ea580c);
+            color: white;
+            box-shadow: 0 6px 25px rgba(245, 158, 11, 0.4);
+        }
+        .btn-stop:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 35px rgba(245, 158, 11, 0.6);
+        }
+        /* Right Panel - Camera & Sensors */
+        .right-panel {
+            background: var(--bg-panel);
+            padding: 25px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        .camera-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid var(--accent-cyan);
+            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.2);
+        }
+        .camera-header {
+            padding: 15px 20px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.2), rgba(168, 85, 247, 0.2));
+            border-bottom: 2px solid var(--accent-cyan);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .camera-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            box-shadow: 0 0 10px var(--accent-green);
+            animation: pulse-glow 2s infinite;
+        }
+        #cameraImage {
+            width: 100%;
+            height: auto;
+            display: block;
+            background: #000;
+        }
+        .no-camera {
+            padding: 80px 20px;
+            text-align: center;
+            color: var(--text-secondary);
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.5), rgba(10, 14, 26, 0.8));
+        }
+        .no-camera-icon {
+            font-size: 64px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        /* Laser Scan with Direction Indicators */
+        .laser-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            border: 2px solid var(--accent-purple);
+            box-shadow: 0 8px 30px rgba(168, 85, 247, 0.2);
+        }
+        .laser-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent-purple);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+        #laserCanvas {
+            width: 100%;
+            height: 300px;
+            border-radius: 8px;
+            background: radial-gradient(circle at center, #0f1419, #0a0e1a);
+        }
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(10, 14, 26, 0.98);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        .loading-overlay.hidden {
+            display: none;
+        }
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 6px solid transparent;
+            border-top-color: var(--accent-cyan);
+            border-right-color: var(--accent-purple);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .loading-text {
+            margin-top: 30px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            color: var(--accent-cyan);
+            letter-spacing: 2px;
+        }
+        /* Notification */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 40px;
+            padding: 20px 30px;
+            border-radius: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            box-shadow: 0 8px 35px rgba(0,0,0,0.5);
+            animation: slideIn 0.3s ease;
+            z-index: 10000;
+            border: 2px solid;
+        }
+        .notification.success {
+            background: var(--accent-green);
+            border-color: #34d399;
+            color: white;
+        }
+        .notification.error {
+            background: var(--accent-red);
+            border-color: #f87171;
+            color: white;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(500px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, var(--accent-cyan), var(--accent-purple));
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-cyan);
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">INITIALIZING SYSTEM...</div>
+    </div>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">
+                <h1>⚡ AMR CONTROL</h1>
+            </div>
+            <div class="status-bar">
+                <div class="status-item">
+                    <div class="status-dot" id="wsIndicator"></div>
+                    <span class="status-text" id="wsStatus">OFFLINE</span>
+                </div>
+                <div class="status-item">
+                    <span class="status-text" id="connectionCount">0 CLIENTS</span>
+                </div>
+            </div>
+        </div>
+        <!-- Left Sidebar -->
+        <div class="sidebar">
+            <div class="section-header">SYSTEM STATUS</div>
+           
+            <div class="info-card">
+                <div class="info-label">Battery Level</div>
+                <div class="info-value" id="batteryPercent">0%</div>
+                <div class="battery-container">
+                    <div class="battery-bar">
+                        <div class="battery-fill" id="batteryFill" style="width: 0%">0%</div>
+                    </div>
+                </div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Voltage</div>
+                <div class="info-value" id="batteryVoltage">0.0V</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Uptime</div>
+                <div class="info-value" id="uptime" style="font-size: 24px;">00:00:00</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Position X</div>
+                <div class="info-value" id="posX" style="font-size: 24px;">0.00</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Position Y</div>
+                <div class="info-value" id="posY" style="font-size: 24px;">0.00</div>
+            </div>
+            <div class="info-card">
+                <div class="info-label">Orientation</div>
+                <div class="info-value" id="posTheta" style="font-size: 24px;">0.0°</div>
+            </div>
+        </div>
+        <!-- Center Panel -->
+        <div class="center-panel">
+            <!-- Speed Control -->
+            <div class="speed-control">
+                <div class="speed-header">
+                    <span class="speed-label">MAX SPEED</span>
+                    <span class="speed-value" id="speedValue">0.5</span>
+                </div>
+                <div class="slider-container">
+                    <input type="range" class="speed-slider" id="speedSlider"
+                           min="0.1" max="1.0" step="0.1" value="0.5">
+                    <div class="speed-marks">
+                        <span>0.1</span>
+                        <span>0.3</span>
+                        <span>0.5</span>
+                        <span>0.7</span>
+                        <span>1.0 m/s</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Joystick -->
+            <div class="joystick-section">
+                <div class="joystick-wrapper" id="joystickWrapper">
+                    <div class="joystick-base">
+                        <div class="joystick-center-lines"></div>
+                        <div class="joystick-stick" id="joystick"></div>
+                    </div>
+                </div>
+                <div class="velocity-display">
+                    <div class="velocity-card">
+                        <div class="velocity-label">Linear</div>
+                        <div class="velocity-value" id="linearVel">0.00</div>
+                    </div>
+                    <div class="velocity-card">
+                        <div class="velocity-label">Angular</div>
+                        <div class="velocity-value" id="angularVel">0.00</div>
+                    </div>
+                </div>
+                <div class="control-buttons">
+                    <button class="btn btn-estop" id="estopBtn">⚠ E-STOP</button>
+                    <button class="btn btn-stop" id="stopBtn">⏸ STOP</button>
+                </div>
+            </div>
+        </div>
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <div class="section-header">CAMERA FEED</div>
+            <div class="camera-section">
+                <div class="camera-header">
+                    <div class="camera-status" id="cameraStatus"></div>
+                    FRONT CAMERA
+                </div>
+                <img id="cameraImage" alt="Camera feed" style="display:none;">
+                <div class="no-camera" id="noCamera">
+                    <div class="no-camera-icon">📷</div>
+                    <div>NO CAMERA SIGNAL</div>
+                    <div style="font-size: 12px; margin-top: 10px; opacity: 0.6;">Waiting for feed...</div>
+                </div>
+            </div>
+            <div class="section-header">LIDAR SCANNER</div>
+            <div class="laser-section">
+                <div class="laser-header">360° PROXIMITY DETECTION</div>
+                <canvas id="laserCanvas"></canvas>
+            </div>
+        </div>
+    </div>
+    <script>
+class AMRController {
+    constructor() {
+        this.ws = null;
+        this.reconnecting = false;
+        this.reconnectDelay = 2000;
+        this.pingInterval = null;
+        this.maxLinearVel = 0.5;
+        this.maxAngularVel = 1.0;
+        this.startTime = Date.now();
+        this.lastCameraTime = 0;
+        this.joystickActive = false;
+        this.joystickCenter = { x: 0, y: 0 };
+        this.joystickPosition = { x: 0, y: 0 };
+        this.lidarCtx = null;
+        this.lidarData = [];
+        this.robotTheta = 0; // For lidar orientation
+       
+        this.init();
+    }
+   
+    init() {
+        this.initCanvas();
+        this.initJoystick();
+        this.initButtons();
+        this.initSpeedControl();
+        this.initTimers();
+        this.connect();
+    }
+
+    initCanvas() {
+        const canvas = document.getElementById('laserCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        this.lidarCtx = ctx;
+        this.drawLidar();
+    }
+
+    drawLidar() {
+        const ctx = this.lidarCtx;
+        const width = ctx.canvas.width;
+        const height = ctx.canvas.height;
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const maxRange = 5.0; // meters
+
+        // Clear canvas
+        ctx.clearRect(0, 0, width, height);
+
+        // Draw grid lines
+        ctx.strokeStyle = 'rgba(0, 212, 255, 0.1)';
+        ctx.lineWidth = 1;
+        for (let r = 0.5; r < maxRange; r += 0.5) {
+            const radius = (r / maxRange) * Math.min(centerX, centerY) * 0.8;
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+            ctx.stroke();
+        }
+
+        // Draw angle lines
+        for (let angle = 0; angle < 360; angle += 30) {
+            ctx.beginPath();
+            const rad = (angle * Math.PI) / 180;
+            const endX = centerX + Math.cos(rad) * Math.min(centerX, centerY) * 0.8;
+            const endY = centerY + Math.sin(rad) * Math.min(centerX, centerY) * 0.8;
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+        }
+
+        // Rotate scan points by robot theta (front is at theta=0, assuming laser aligned with robot front)
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(this.robotTheta); // Apply robot orientation
+        ctx.translate(-centerX, -centerY);
+
+        // Draw scan points
+        ctx.fillStyle = 'rgba(0, 212, 255, 0.8)';
+        this.lidarData.forEach((dist, i) => {
+            if (dist > 0 && dist < maxRange) {
+                const angle = (i / (this.lidarData.length - 1)) * 2 * Math.PI - Math.PI; // Assume 0 is front (adjust offset if needed)
+                const radius = (dist / maxRange) * Math.min(centerX, centerY) * 0.8;
+                const x = centerX + Math.cos(angle) * radius;
+                const y = centerY + Math.sin(angle) * radius;
+                ctx.beginPath();
+                ctx.arc(x, y, 2, 0, 2 * Math.PI);
+                ctx.fill();
+
+                // Direction indicator (arrow for obstacles)
+                if (dist < 1.0) {
+                    ctx.fillStyle = 'rgba(239, 68, 68, 0.8)';
+                    const arrowLength = 10;
+                    const arrowX = centerX + Math.cos(angle) * (Math.min(centerX, centerY) * 0.4);
+                    const arrowY = centerY + Math.sin(angle) * (Math.min(centerX, centerY) * 0.4);
+                    ctx.beginPath();
+                    ctx.moveTo(arrowX, arrowY);
+                    ctx.lineTo(arrowX + Math.cos(angle + Math.PI / 6) * arrowLength, arrowY + Math.sin(angle + Math.PI / 6) * arrowLength);
+                    ctx.lineTo(arrowX + Math.cos(angle - Math.PI / 6) * arrowLength, arrowY + Math.sin(angle - Math.PI / 6) * arrowLength);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.fillStyle = 'rgba(0, 212, 255, 0.8)';
+                }
+            }
+        });
+
+        ctx.restore();
+
+        // Draw robot front indicator (arrow pointing forward)
+        ctx.strokeStyle = 'var(--accent-green)';
+        ctx.lineWidth = 3;
+        ctx.fillStyle = 'var(--accent-green)';
+        const frontRadius = Math.min(centerX, centerY) * 0.2;
+        const frontAngle = 0; // Front is at 0 rad
+        const frontX = centerX + Math.cos(frontAngle) * frontRadius;
+        const frontY = centerY + Math.sin(frontAngle) * frontRadius;
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(frontX, frontY);
+        ctx.stroke();
+
+        // Arrow head
+        const arrowLength = 15;
+        ctx.beginPath();
+        ctx.moveTo(frontX, frontY);
+        ctx.lineTo(frontX + Math.cos(frontAngle + Math.PI / 6) * arrowLength, frontY + Math.sin(frontAngle + Math.PI / 6) * arrowLength);
+        ctx.lineTo(frontX + Math.cos(frontAngle - Math.PI / 6) * arrowLength, frontY + Math.sin(frontAngle - Math.PI / 6) * arrowLength);
+        ctx.closePath();
+        ctx.fill();
+
+        // Draw robot center
+        ctx.fillStyle = '#10b981';
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, 5, 0, 2 * Math.PI);
+        ctx.fill();
+    }
+   
+    initJoystick() {
+        const joystick = document.getElementById('joystick');
+        const wrapper = document.getElementById('joystickWrapper');
+
+        let isDragging = false;
+        let startX, startY;
+
+        const onStart = (e) => {
+            e.preventDefault();
+            const rect = wrapper.getBoundingClientRect();
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            startX = clientX - rect.left - centerX;
+            startY = clientY - rect.top - centerY;
+
+            // Only start if touch/mouse is within the stick bounds
+            const dist = Math.sqrt(startX * startX + startY * startY);
+            if (dist > 50) return; // Stick radius approx 50px
+
+            isDragging = true;
+            this.joystickActive = true;
+            joystick.style.cursor = 'grabbing';
+
+            updatePosition(clientX, clientY, rect, centerX, centerY);
+        };
+
+        const onMove = (e) => {
+            if (!isDragging) return;
+            e.preventDefault();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            const rect = wrapper.getBoundingClientRect();
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            updatePosition(clientX, clientY, rect, centerX, centerY);
+        };
+
+        const onEnd = (e) => {
+            e.preventDefault();
+            isDragging = false;
+            this.joystickActive = false;
+            this.joystickPosition = { x: 0, y: 0 };
+            joystick.style.transform = `translate(-50%, -50%)`;
+            this.updateVelocity(0, 0);
+            joystick.style.cursor = 'grab';
+        };
+
+        const updatePosition = (clientX, clientY, rect, centerX, centerY) => {
+            const x = clientX - rect.left - centerX;
+            const y = clientY - rect.top - centerY;
+
+            const maxDist = 90; // pixels from center
+            const dist = Math.sqrt(x * x + y * y);
+            let normX = 0, normY = 0;
+            if (dist > 0) {
+                normX = x / dist;
+                normY = y / dist;
+            }
+            if (dist > maxDist) {
+                this.joystickPosition = { x: normX * maxDist, y: normY * maxDist };
+            } else {
+                this.joystickPosition = { x, y };
+            }
+
+            joystick.style.transform = `translate(calc(-50% + ${this.joystickPosition.x}px), calc(-50% + ${this.joystickPosition.y}px))`;
+
+            // Fixed logic: up (negative y) = forward (positive linear), right (positive x) = right turn (negative angular)
+            const linear = -this.joystickPosition.y / maxDist * this.maxLinearVel;
+            const angular = -this.joystickPosition.x / maxDist * this.maxAngularVel;
+            this.updateVelocity(linear, angular);
+        };
+
+        // Mouse events
+        joystick.addEventListener('mousedown', onStart);
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onEnd);
+
+        // Touch events
+        joystick.addEventListener('touchstart', onStart, { passive: false });
+        document.addEventListener('touchmove', onMove, { passive: false });
+        document.addEventListener('touchend', onEnd, { passive: false });
+
+        // Prevent context menu
+        joystick.addEventListener('contextmenu', (e) => e.preventDefault());
+    }
+
+    updateVelocity(linear, angular) {
+        document.getElementById('linearVel').textContent = linear.toFixed(2);
+        document.getElementById('angularVel').textContent = angular.toFixed(2);
+
+        if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+            this.ws.send(JSON.stringify({
+                type: 'velocity',
+                linear: linear,
+                angular: angular
+            }));
+        }
+    }
+   
+    initButtons() {
+        document.getElementById('estopBtn').addEventListener('click', () => {
+            if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                this.ws.send(JSON.stringify({ type: 'estop' }));
+                this.showNotification('E-STOP ACTIVATED', 'error');
+            }
+        });
+
+        document.getElementById('stopBtn').addEventListener('click', () => {
+            if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                this.ws.send(JSON.stringify({ type: 'stop' }));
+                this.updateVelocity(0, 0);
+                this.showNotification('STOP COMMAND SENT', 'success');
+            }
+        });
+    }
+   
+    initSpeedControl() {
+        const slider = document.getElementById('speedSlider');
+        const valueSpan = document.getElementById('speedValue');
+
+        slider.addEventListener('input', (e) => {
+            const value = parseFloat(e.target.value);
+            this.maxLinearVel = value;
+            valueSpan.textContent = value.toFixed(1);
+
+            if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                this.ws.send(JSON.stringify({
+                    type: 'max_speed',
+                    value: value
+                }));
+            }
+        });
+    }
+   
+    initTimers() {
+        // Client-side uptime fallback
+        setInterval(() => {
+            const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
+            const hours = Math.floor(elapsed / 3600).toString().padStart(2, '0');
+            const minutes = Math.floor((elapsed % 3600) / 60).toString().padStart(2, '0');
+            const seconds = (elapsed % 60).toString().padStart(2, '0');
+            document.getElementById('uptime').textContent = `${hours}:${minutes}:${seconds}`;
+        }, 1000);
+    }
+
+    startPingInterval() {
+        this.pingInterval = setInterval(() => {
+            if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                this.ws.send(JSON.stringify({ type: 'ping' }));
+            }
+        }, 30000); // 30 seconds
+    }
+
+    stopPingInterval() {
+        if (this.pingInterval) {
+            clearInterval(this.pingInterval);
+            this.pingInterval = null;
+        }
+    }
+
+    showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+            notification.remove();
+        }, 3000);
+    }
+   
+    connect() {
+        if (this.reconnecting) return;
+        this.reconnecting = true;
+       
+        const wsUrl = `ws://${window.location.hostname}:8765`;
+       
+        try {
+            this.ws = new WebSocket(wsUrl);
+           
+            this.ws.onopen = () => {
+                console.log('✅ Connected');
+                this.reconnecting = false;
+               
+                document.getElementById('wsIndicator').classList.add('active');
+                document.getElementById('wsStatus').textContent = 'ONLINE';
+                document.getElementById('loadingOverlay').classList.add('hidden');
+               
+                this.startPingInterval();
+                this.showNotification('System Connected', 'success');
+            };
+           
+            this.ws.onclose = () => {
+                console.log('❌ Disconnected');
+                this.reconnecting = false;
+               
+                document.getElementById('wsIndicator').classList.remove('active');
+                document.getElementById('wsStatus').textContent = 'OFFLINE';
+                document.getElementById('loadingOverlay').classList.remove('hidden');
+               
+                this.stopPingInterval();
+                setTimeout(() => this.connect(), this.reconnectDelay);
+            };
+           
+            this.ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+                this.reconnecting = false;
+            };
+           
+            this.ws.onmessage = (event) => {
+                try {
+                    const msg = JSON.parse(event.data);
+                    this.handleMessage(msg);
+                } catch (e) {
+                    console.error('Parse error:', e);
+                }
+            };
+        } catch (error) {
+            console.error('Connection error:', error);
+            this.reconnecting = false;
+            setTimeout(() => this.connect(), this.reconnectDelay);
+        }
+    }
+
+    handleMessage(msg) {
+        switch (msg.type) {
+            case 'status':
+                if (msg.battery !== undefined) {
+                    const percent = Math.round(msg.battery);
+                    document.getElementById('batteryPercent').textContent = `${percent}%`;
+                    const fill = document.getElementById('batteryFill');
+                    fill.style.width = `${percent}%`;
+                    fill.textContent = `${percent}%`;
+                    fill.className = 'battery-fill';
+                    if (percent < 20) fill.classList.add('low');
+                    else if (percent < 50) fill.classList.add('medium');
+                }
+                if (msg.voltage !== undefined) {
+                    document.getElementById('batteryVoltage').textContent = `${msg.voltage.toFixed(1)}V`;
+                }
+                if (msg.uptime !== undefined) {
+                    const elapsed = msg.uptime;
+                    const hours = Math.floor(elapsed / 3600).toString().padStart(2, '0');
+                    const minutes = Math.floor((elapsed % 3600) / 60).toString().padStart(2, '0');
+                    const seconds = (elapsed % 60).toString().padStart(2, '0');
+                    document.getElementById('uptime').textContent = `${hours}:${minutes}:${seconds}`;
+                }
+                if (msg.position) {
+                    document.getElementById('posX').textContent = `${msg.position.x.toFixed(2)}`;
+                    document.getElementById('posY').textContent = `${msg.position.y.toFixed(2)}`;
+                    document.getElementById('posTheta').textContent = `${(msg.position.theta * 180 / Math.PI).toFixed(1)}°`;
+                    this.robotTheta = msg.position.theta; // Update for lidar
+                    this.drawLidar(); // Redraw with orientation
+                }
+                if (msg.velocity) {
+                    document.getElementById('linearVel').textContent = msg.velocity.linear.toFixed(2);
+                    document.getElementById('angularVel').textContent = msg.velocity.angular.toFixed(2);
+                }
+                break;
+
+            case 'clients':
+                document.getElementById('connectionCount').textContent = `${msg.count} CLIENTS`;
+                break;
+
+            case 'camera':
+                const img = document.getElementById('cameraImage');
+                const noCamera = document.getElementById('noCamera');
+                const cameraStatus = document.getElementById('cameraStatus');
+                if (msg.data) {
+                    img.src = `data:image/jpeg;base64,${msg.data}`;
+                    img.style.display = 'block';
+                    noCamera.style.display = 'none';
+                    cameraStatus.style.background = 'var(--accent-green)';
+                    this.lastCameraTime = Date.now();
+                } else {
+                    img.style.display = 'none';
+                    noCamera.style.display = 'block';
+                    cameraStatus.style.background = 'var(--accent-red)';
+                }
+                break;
+
+            case 'lidar':
+                this.lidarData = msg.data || [];
+                this.drawLidar();
+                break;
+
+            case 'pong':
+                // Handle pong if needed
+                break;
+
+            default:
+                console.log('Unknown message type:', msg.type);
+        }
+    }
+}
+
+// Initialize the controller when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    new AMRController();
+});
+    </script>
+</body>
+</html>
+
+
+
+<!-- SIMPLE GUI -->
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMR Remote Control</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e27;
+            color: #e0e6ed;
+            overflow: hidden;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            grid-template-rows: 60px 1fr;
+            height: 100vh;
+            gap: 1px;
+            background: #141b2d;
+        }
+
+        .header {
+            grid-column: 1 / -1;
+            background: #1a2332;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid #2c3e50;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            color: #3498db;
+            font-weight: 600;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #e74c3c;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.connected {
+            background: #2ecc71;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .sidebar, .telemetry-panel {
+            background: #1a2332;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .main-control {
+            background: #0f1419;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #7f8c8d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #2c3e50;
+        }
+
+        .telemetry-item {
+            background: #0f1419;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .telemetry-item label {
+            display: block;
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-bottom: 6px;
+        }
+
+        .telemetry-item .value {
+            font-size: 20px;
+            font-weight: 600;
+            color: #3498db;
+        }
+
+        .battery-bar {
+            width: 100%;
+            height: 24px;
+            background: #0f1419;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 8px;
+            border: 1px solid #2c3e50;
+        }
+
+        .battery-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #27ae60);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .battery-fill.low {
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+        }
+
+        .battery-fill.medium {
+            background: linear-gradient(90deg, #f39c12, #e67e22);
+        }
+
+        .joystick-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+        }
+
+        .joystick-base {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #1e2d3d, #0a0e1a);
+            border: 3px solid #2c3e50;
+            position: relative;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.6);
+        }
+
+        .joystick-stick {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 40% 40%, #3498db, #2980b9);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            cursor: grab;
+            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
+            transition: box-shadow 0.2s;
+            border: 2px solid #5dade2;
+        }
+
+        .joystick-stick:active {
+            cursor: grabbing;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.6);
+        }
+
+        .joystick-crosshair {
+            position: absolute;
+            width: 60%;
+            height: 60%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .joystick-crosshair::before,
+        .joystick-crosshair::after {
+            content: '';
+            position: absolute;
+            background: rgba(52, 152, 219, 0.2);
+        }
+
+        .joystick-crosshair::before {
+            width: 2px;
+            height: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .joystick-crosshair::after {
+            height: 2px;
+            width: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .velocity-display {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 280px;
+        }
+
+        .velocity-item {
+            background: #1a2332;
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #2c3e50;
+        }
+
+        .velocity-item label {
+            display: block;
+            font-size: 11px;
+            color: #7f8c8d;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .velocity-item .value {
+            font-size: 28px;
+            font-weight: 600;
+            color: #3498db;
+            font-family: 'Courier New', monospace;
+        }
+
+        .control-buttons {
+            margin-top: 30px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-estop {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-estop:hover {
+            background: #c0392b;
+            transform: scale(1.05);
+        }
+
+        .btn-stop {
+            background: #34495e;
+            color: white;
+        }
+
+        .btn-stop:hover {
+            background: #2c3e50;
+        }
+
+        .laser-scan-canvas {
+            width: 100%;
+            height: 300px;
+            background: #0f1419;
+            border-radius: 8px;
+            margin-top: 12px;
+            border: 1px solid #2c3e50;
+        }
+
+        .position-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .position-cell {
+            background: #0f1419;
+            padding: 12px;
+            border-radius: 6px;
+            text-align: center;
+            border: 1px solid #2c3e50;
+        }
+
+        .position-cell label {
+            display: block;
+            font-size: 10px;
+            color: #7f8c8d;
+            margin-bottom: 4px;
+        }
+
+        .position-cell .value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #3498db;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>AMR Remote Control</h1>
+            <div class="connection-status">
+                <div class="status-indicator" id="statusIndicator"></div>
+                <span id="statusText">Disconnected</span>
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="section-title">System Status</div>
+            <div class="telemetry-item">
+                <label>Battery Level</label>
+                <div class="value" id="batteryPercent">0%</div>
+                <div class="battery-bar">
+                    <div class="battery-fill" id="batteryFill" style="width: 0%">0%</div>
+                </div>
+            </div>
+            <div class="telemetry-item">
+                <label>Battery Voltage</label>
+                <div class="value" id="batteryVoltage">0.0V</div>
+            </div>
+            <div class="telemetry-item">
+                <label>Active Connections</label>
+                <div class="value" id="connectionCount">0</div>
+            </div>
+        </div>
+
+        <div class="main-control">
+            <div class="joystick-container">
+                <div class="joystick-base">
+                    <div class="joystick-crosshair"></div>
+                    <div class="joystick-stick" id="joystick"></div>
+                </div>
+            </div>
+            <div class="velocity-display">
+                <div class="velocity-item">
+                    <label>Linear</label>
+                    <div class="value" id="linearVel">0.00</div>
+                </div>
+                <div class="velocity-item">
+                    <label>Angular</label>
+                    <div class="value" id="angularVel">0.00</div>
+                </div>
+            </div>
+            <div class="control-buttons">
+                <button class="btn btn-estop" id="estopBtn">Emergency Stop</button>
+                <button class="btn btn-stop" id="stopBtn">Stop</button>
+            </div>
+        </div>
+
+        <div class="telemetry-panel">
+            <div class="section-title">Position</div>
+            <div class="position-grid">
+                <div class="position-cell">
+                    <label>X</label>
+                    <div class="value" id="posX">0.00</div>
+                </div>
+                <div class="position-cell">
+                    <label>Y</label>
+                    <div class="value" id="posY">0.00</div>
+                </div>
+                <div class="position-cell">
+                    <label>Z</label>
+                    <div class="value" id="posZ">0.00</div>
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-top: 24px;">Laser Scan</div>
+            <canvas class="laser-scan-canvas" id="laserCanvas"></canvas>
+        </div>
+    </div>
+
+    <script>
+        class AMRController {
+            constructor() {
+                this.ws = null;
+                this.reconnectInterval = 2000;
+                this.joystickActive = false;
+                this.maxLinearVel = 0.5;
+                this.maxAngularVel = 1.0;
+                
+                this.initJoystick();
+                this.initButtons();
+                this.initCanvas();
+                this.connect();
+            }
+
+            connect() {
+                const wsUrl = `ws://${window.location.hostname}:8765`;
+                this.ws = new WebSocket(wsUrl);
+
+                this.ws.onopen = () => {
+                    document.getElementById('statusIndicator').classList.add('connected');
+                    document.getElementById('statusText').textContent = 'Connected';
+                    console.log('WebSocket connected');
+                };
+
+                this.ws.onclose = () => {
+                    document.getElementById('statusIndicator').classList.remove('connected');
+                    document.getElementById('statusText').textContent = 'Disconnected';
+                    console.log('WebSocket disconnected, reconnecting...');
+                    setTimeout(() => this.connect(), this.reconnectInterval);
+                };
+
+                this.ws.onmessage = (event) => {
+                    const msg = JSON.parse(event.data);
+                    if (msg.type === 'telemetry') {
+                        this.updateTelemetry(msg.data);
+                    }
+                };
+
+                this.ws.onerror = (error) => {
+                    console.error('WebSocket error:', error);
+                };
+            }
+
+            sendCommand(linear, angular) {
+                if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                    this.ws.send(JSON.stringify({
+                        type: 'cmd_vel',
+                        linear: linear,
+                        angular: angular
+                    }));
+                }
+            }
+
+            initJoystick() {
+                const stick = document.getElementById('joystick');
+                const base = stick.parentElement;
+                const baseRect = base.getBoundingClientRect();
+                const centerX = baseRect.width / 2;
+                const centerY = baseRect.height / 2;
+                const maxRadius = (baseRect.width / 2) - 50;
+
+                let isDragging = false;
+
+                const handleMove = (clientX, clientY) => {
+                    const rect = base.getBoundingClientRect();
+                    let x = clientX - rect.left - centerX;
+                    let y = clientY - rect.top - centerY;
+
+                    const distance = Math.sqrt(x * x + y * y);
+                    if (distance > maxRadius) {
+                        const angle = Math.atan2(y, x);
+                        x = Math.cos(angle) * maxRadius;
+                        y = Math.sin(angle) * maxRadius;
+                    }
+
+                    stick.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+
+                    const linear = -(y / maxRadius) * this.maxLinearVel;
+                    const angular = -(x / maxRadius) * this.maxAngularVel;
+
+                    document.getElementById('linearVel').textContent = linear.toFixed(2);
+                    document.getElementById('angularVel').textContent = angular.toFixed(2);
+
+                    this.sendCommand(linear, angular);
+                };
+
+                const resetStick = () => {
+                    stick.style.transform = 'translate(-50%, -50%)';
+                    document.getElementById('linearVel').textContent = '0.00';
+                    document.getElementById('angularVel').textContent = '0.00';
+                    this.sendCommand(0, 0);
+                    isDragging = false;
+                };
+
+                stick.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    e.preventDefault();
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                    if (isDragging) {
+                        handleMove(e.clientX, e.clientY);
+                    }
+                });
+
+                document.addEventListener('mouseup', resetStick);
+
+                stick.addEventListener('touchstart', (e) => {
+                    isDragging = true;
+                    e.preventDefault();
+                });
+
+                document.addEventListener('touchmove', (e) => {
+                    if (isDragging) {
+                        const touch = e.touches[0];
+                        handleMove(touch.clientX, touch.clientY);
+                    }
+                });
+
+                document.addEventListener('touchend', resetStick);
+            }
+
+            initButtons() {
+                document.getElementById('estopBtn').addEventListener('click', () => {
+                    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+                        this.ws.send(JSON.stringify({ type: 'emergency_stop' }));
+                    }
+                });
+
+                document.getElementById('stopBtn').addEventListener('click', () => {
+                    this.sendCommand(0, 0);
+                });
+            }
+
+            initCanvas() {
+                this.canvas = document.getElementById('laserCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.canvas.width = this.canvas.offsetWidth;
+                this.canvas.height = this.canvas.offsetHeight;
+            }
+
+            updateTelemetry(data) {
+                document.getElementById('batteryPercent').textContent = 
+                    `${data.battery_percentage.toFixed(1)}%`;
+                document.getElementById('batteryVoltage').textContent = 
+                    `${data.battery_voltage.toFixed(2)}V`;
+                document.getElementById('connectionCount').textContent = 
+                    data.connection_count;
+
+                const batteryFill = document.getElementById('batteryFill');
+                batteryFill.style.width = `${data.battery_percentage}%`;
+                batteryFill.textContent = `${data.battery_percentage.toFixed(0)}%`;
+                
+                batteryFill.className = 'battery-fill';
+                if (data.battery_percentage < 20) {
+                    batteryFill.classList.add('low');
+                } else if (data.battery_percentage < 50) {
+                    batteryFill.classList.add('medium');
+                }
+
+                document.getElementById('posX').textContent = 
+                    data.position.x.toFixed(2);
+                document.getElementById('posY').textContent = 
+                    data.position.y.toFixed(2);
+                document.getElementById('posZ').textContent = 
+                    data.position.z.toFixed(2);
+
+                this.drawLaserScan(data.laser_scan_ranges);
+            }
+
+            drawLaserScan(ranges) {
+                const ctx = this.ctx;
+                const width = this.canvas.width;
+                const height = this.canvas.height;
+                const centerX = width / 2;
+                const centerY = height / 2;
+
+                ctx.clearRect(0, 0, width, height);
+
+                ctx.strokeStyle = '#2c3e50';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, Math.min(width, height) * 0.4, 0, 2 * Math.PI);
+                ctx.stroke();
+
+                if (!ranges || ranges.length === 0) return;
+
+                const scale = Math.min(width, height) * 0.08;
+                const angleStep = Math.PI / (ranges.length - 1);
+
+                ctx.strokeStyle = '#3498db';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+
+                for (let i = 0; i < ranges.length; i++) {
+                    const angle = -Math.PI / 2 + i * angleStep;
+                    const range = Math.min(ranges[i], 10) * scale;
+                    const x = centerX + range * Math.cos(angle);
+                    const y = centerY + range * Math.sin(angle);
+
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.stroke();
+
+                ctx.fillStyle = '#e74c3c';
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, 5, 0, 2 * Math.PI);
+                ctx.fill();
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            new AMRController();
+        });
+    </script>
+</body>
+</html> -->
